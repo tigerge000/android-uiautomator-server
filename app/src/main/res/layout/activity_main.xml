@@ -52,10 +52,17 @@
         android:text="停止UIAutomator" />
 
     <Button
+        android:id="@+id/start_uiautomator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="启动UIAutomator" />
+
+    <Button
         android:id="@+id/stop_atx_agent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="停止ATXAgent" />
+
 
     <TextView
         android:id="@+id/ip_address"
@@ -63,4 +70,24 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10sp"
         android:text="IP: " />
+
+    <TextView
+        android:id="@+id/atx_port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="ATX端口: " />
+    <TextView
+        android:id="@+id/ui_port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="UiAutomator端口: " />
+
+    <TextView
+        android:id="@+id/shell_port"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10sp"
+        android:text="Shell端口: " />
 </LinearLayout>

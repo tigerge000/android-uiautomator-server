@@ -21,12 +21,19 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okio.BufferedSink;
 
 public class MainActivity extends Activity {
     private final String TAG = "ATXMainActivity";
+
+    private ShellHttpServer shellHttpServer;
+
+    private static int PORT = 9999;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -53,6 +60,14 @@ public class MainActivity extends Activity {
         Intent serviceIntent = new Intent(this, Service.class);
         startService(serviceIntent);
         bindService(serviceIntent, connection, BIND_IMPORTANT | BIND_AUTO_CREATE);
+
+
+        shellHttpServer = new ShellHttpServer(PORT);
+        try {
+            shellHttpServer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Button btnFinish = (Button) findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +131,33 @@ public class MainActivity extends Activity {
             }
         });
 
+
+        ((Button) findViewById(R.id.start_uiautomator)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Request request = new Request.Builder()
+                        .url("http://127.0.0.1:7912/uiautomator")
+                        .post(null)
+                        .build();
+                new OkHttpClient().newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                        Looper.prepare();
+                        Toast.makeText(MainActivity.this, "Uiautomator already stared ", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        Looper.prepare();
+                        Toast.makeText(MainActivity.this, "Uiautomator stared", Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                });
+            }
+        });
+
         ((Button) findViewById(R.id.stop_atx_agent)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,8 +195,21 @@ public class MainActivity extends Activity {
         int ip = wifiManager.getConnectionInfo().getIpAddress();
         String ipStr = (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "." + ((ip >> 24) & 0xFF);
         TextView textViewIP = (TextView) findViewById(R.id.ip_address);
-        textViewIP.setText(ipStr);
+        textViewIP.setText("IP地址:" + ipStr);
         textViewIP.setTextColor(Color.BLUE);
+
+        TextView textViewAtx = (TextView) findViewById(R.id.atx_port);
+        textViewAtx.setText("ATX端口:7912");
+        textViewAtx.setTextColor(Color.BLUE);
+
+        TextView textViewUi = (TextView) findViewById(R.id.ui_port);
+        textViewUi.setText("UiAutomator端口:9008");
+        textViewUi.setTextColor(Color.BLUE);
+
+        TextView textViewShell = (TextView) findViewById(R.id.shell_port);
+        textViewShell.setText("Shell端口:9999");
+        textViewShell.setTextColor(Color.BLUE);
+
     }
 
     @Override
