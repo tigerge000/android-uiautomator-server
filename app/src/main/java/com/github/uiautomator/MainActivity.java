@@ -128,6 +128,9 @@ public class MainActivity extends Activity {
                         Looper.loop();
                     }
                 });
+
+                shellHttpServer.stop();
+
             }
         });
 
@@ -155,6 +158,11 @@ public class MainActivity extends Activity {
                         Looper.loop();
                     }
                 });
+                try {
+                    shellHttpServer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
